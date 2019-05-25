@@ -96,8 +96,34 @@ router.post('/', async (req, res) => {
 // UPDATE
 
 router.put('/:id', async (req, res) => {
+  const { id } = req.params;
 
+  const zooChanges = req.body;
 
+  try {
+    const zoo = await db('zoos').where({ id }).first();
+
+    if (!zoo) {
+      return res.status(404).json({message: 'zoo not found'});
+
+    } else {
+
+      await db('zoos').where({ id }).update(zooChanges);
+      const updatedZoo = await db('zoos').where({ id }).first();
+
+      return res.status(200)
+        .json({
+          message: `${zoo.name} has been updated to ${updatedZoo.name}`
+        });
+    }
+  }
+  catch (err) {
+    res.status(500)
+      .json({
+        err,
+        message: 'Unable to process request'
+      })
+  }
 })
 
 // DELETE
