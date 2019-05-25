@@ -39,8 +39,22 @@ router.post('/', async (req, res) => {
   try {
     const { name } = newZoo;
 
+    const zoos = await db('zoos');
+
+    const result = zoos.filter((zoo) => {
+      return name === zoo.name;
+    });
+
     if (!name) {
       return res.status(400).json({error: 'name missing'});
+
+    } else if (result.length) {
+
+      return res.status(400)
+        .json({
+          message: `${name} already exist`
+        });
+
     } else {
 
       const zoo = await db('zoos')
