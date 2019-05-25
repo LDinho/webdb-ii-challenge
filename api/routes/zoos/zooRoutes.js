@@ -27,8 +27,24 @@ router.get('/', async (req, res) => {
 // GET by id
 
 router.get('/:id', async (req, res) => {
+  const { id } = req.params;
 
+  try {
+      const zoo = await db('zoos').where({ id }).first();
 
+      if (!zoo) {
+        return res.status(404).json({message: 'zoo not found'});
+      }
+
+      res.status(200).json(zoo);
+  }
+  catch (err) {
+    res.status(500)
+      .json({
+        err,
+        message: 'Unable to process request'
+      })
+  }
 });
 
 //POST
