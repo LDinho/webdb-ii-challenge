@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
       res.status(200).json(zoos)
 
     } else {
-      res.status(400).json({message: `No zoos found`})
+      res.status(404).json({message: `No zoos found`})
 
     }
   }
@@ -73,12 +73,15 @@ router.post('/', async (req, res) => {
 
     } else {
 
-      const zoo = await db('zoos')
+      const zooAdded = await db('zoos')
         .insert(newZoo, 'id');
 
-      res.status(201).json(zoo);
-    }
+      const result = await db('zoos')
+        .where({ id: zooAdded[0] })
+        .first();
 
+      res.status(201).json(result);
+    }
   }
   catch (err) {
     return res.status(500)
