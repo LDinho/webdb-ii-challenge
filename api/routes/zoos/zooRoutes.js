@@ -100,6 +100,12 @@ router.put('/:id', async (req, res) => {
 
   const zooChanges = req.body;
 
+  const { name } = zooChanges;
+
+  if (!name) {
+    return res.status(400).json({message: 'provide a name'});
+  }
+
   try {
     const zoo = await db('zoos').where({ id }).first();
 
